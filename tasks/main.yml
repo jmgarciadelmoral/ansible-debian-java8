@@ -1,0 +1,26 @@
+- name: delete conflictive packages
+  package:
+    name: "{{item}}"
+    state: absent
+    autoremove: yes
+  with_items:
+    - openjdk*
+  
+- apt_repository:
+    repo: 'ppa:webupd8team/java'
+
+- apt:
+    update_cache: yes
+
+- name: set licence selected
+  shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+- name: set licence seen
+  shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+
+- name: install java 8 package
+  package: 
+    name: "{{item}}" 
+  with_items:
+    - oracle-java8-installer
+    - oracle-java8-set-default
